@@ -67,15 +67,18 @@ function drawAttackBox2(){
 //Player 1 sin movement
 let right = false
 let left = false
-let down = false
+let attack1 = 0
+
 function checkButton(event) {
   event.key === "a" ? left = true : null
   event.key === "d" ? right = true : null
+  event.key === "s" ? attack1 = 20 : null
 }
 document.addEventListener("keydown", checkButton)
 document.addEventListener("keyup", event => {
   event.key === "a" ? left = false : null
   event.key === "d" ? right = false : null
+  event.key === "s" ? attack1 = 0 : null
 })
 
 //Player 2 sin movement
@@ -112,6 +115,7 @@ function drawElements(){
     ){
     console.log("hei");
   }
+  console.log(attack1);
 
   requestAnimationFrame(drawElements)
 }
