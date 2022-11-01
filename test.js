@@ -115,7 +115,6 @@ function drawElements(){
     ){
     console.log("hei");
   }
-  console.log(attack1);
 
   requestAnimationFrame(drawElements)
 }

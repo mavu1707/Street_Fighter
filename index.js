@@ -26,11 +26,11 @@ const player2 ={
   isAttacking: false
 }
 
+//Attack boksene blir laget
 const attackBox1 ={
   width: 100,
   height: 50
 }
-
 const attackBox2 ={
   width: 100,
   height: 50
