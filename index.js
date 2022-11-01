@@ -15,7 +15,8 @@ const player1 ={
   x: 100,
   y: 500,
   color: "red",
-  speed: 3
+  speed: 3,
+  isAttacking: false
 }
 const player2 ={
   width: 50,
@@ -64,13 +65,21 @@ function player2Attack(){
   ctx.closePath()
 }
 
+function player1IsAttacking(){
+  player1.isAttacking = true
+  setTimeout(() =>{
+    player1.isAttacking = false
+  }, 100)
+}
 //Player 1 sin movement
 let right = false
 let left = false
+let down = false
 
 function checkButton(event) {
   event.key === "a" ? left = true : null
   event.key === "d" ? right = true : null
+  event.key === "s" ? player1Attack = true : null
 }
 
 document.addEventListener("keydown", checkButton)
@@ -111,7 +120,8 @@ function drawElements(){
   righty ? player2.x = player2.x + player2.speed : null
 
   if (player1.x + attack1.width >= player2.x &&
-    player1.x < player2.x + player2.width){
+    player1.x < player2.x + player2.width &&
+    player1.isAttacking){
     console.log("hei");
   }
 
