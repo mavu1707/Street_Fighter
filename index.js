@@ -109,11 +109,13 @@ function drawElements(){
   ctx.fillStyle = 'blue'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+  //Player 1 blir tegnet opp og nlir sjekket for movement 
   player1.update()
   left ? player1.playerPosition.x = player1.playerPosition.x - 2 : null
   right ? player1.playerPosition.x = player1.playerPosition.x + 2 : null
   up ? player1.playerVelocity.y = -2 : null
 
+  //Player 2 blir tegnet opp og nlir sjekket for movement 
   player2.update()
   lefty ? player2.playerPosition.x = player2.playerPosition.x - 2 : null
   righty ? player2.playerPosition.x = player2.playerPosition.x + 2 : null
@@ -123,33 +125,3 @@ function drawElements(){
 }
 
 drawElements()
-
-
-
-/*
-//Legger til player movement
-//addEventListener "hører" etter om en tast er trykket ned
-//Dette er en arrow funksjon med paramenter event
-addEventListener('keydown', (event)=>{
-  //Switch case, den tar imot paramenter og key, den sjekker om tasten d er presset ned, break stopper JS
-  switch (event.key){
-    case 'd': 
-      player1.playerVelocity.x = 1
-    break
-    case 'a': 
-      player1.playerVelocity.x = -1
-    break
-  }
-})
-
-addEventListener('keyup', (event)=>{
-  switch (event.key){
-    case 'd': 
-      player1.playerVelocity.x = 0
-    break
-    case 'a': 
-      player1.playerVelocity.x = 0
-    break
-  }
-})
-*/
