@@ -21,26 +21,31 @@ class PlayerInfo{
     this.playerWidth = 50
     this.playerHeight = 150
     this.color = color
+    this.lastKey
     this.attackBox = {
       position: this.playerPosition,
       width: 100,
       height: 50
     }
+    this.isAttacking
   }
 
   //lager en funksjon som tegner opp player
   drawPlayer(){
     ctx.fillStyle = this.color
     ctx.fillRect(this.playerPosition.x, this.playerPosition.y, this.playerWidth, this.playerHeight)
-    
-    ctx.fillStyle = 'black'
-    ctx.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
 
+    if(this.isAttacking){
+      ctx.fillStyle = 'black'
+      ctx.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+    }
+    
   }
 
   //lager en update funksjon som har med "opdatert" informasjon om player
   update(){
     this.drawPlayer()
+
     this.playerPosition.x += this.playerVelocity.x
     this.playerPosition.y += this.playerVelocity.y
 
@@ -49,6 +54,13 @@ class PlayerInfo{
     } else{
       this.playerVelocity.y += gravity
     }
+  }
+
+  attack(){
+    this.isAttacking = true
+    setTimeout (()=>{
+      this.isAttacking = false
+    }, 100)
   }
 }
 
@@ -80,59 +92,54 @@ const player2 = new PlayerInfo({
   color : 'yellow'
 })
 
-//Player 1 sin movement
-let right = false
-let left = false
-let up = false
-let attack = false
-
-function checkButton(event) {
-  event.key === "a" ? left = true : null
-  event.key === "d" ? right = true : null
-  event.key === "w" ? up = true : null
+const keys = {
+  a: {
+    pressed: false
+  },
+  d: {
+    pressed: false
+  },
+  w: {
+    pressed: false
+  },
+  ArrowLeft: {
+    pressed: false
+  },
+  ArrowRight: {
+    pressed: false
+  },
+  ArrowUp: {
+    pressed: false
+  }
 }
-document.addEventListener("keydown", checkButton)
-document.addEventListener("keyup", event => {
-  event.key === "a" ? left = false : null
-  event.key === "d" ? right = false : null
-  event.key === "w" ? up = false : null
-})
 
-
-//Player 2 sin movement
-let righty = false
-let lefty = false
-let upy = false
-
-function check(event) {
-  event.key === "ArrowLeft" ? lefty = true : null
-  event.key === "ArrowRight" ? righty = true : null
-  event.key === "ArrowUp" ? upy = true : null
-}
-document.addEventListener("keydown", check)
-document.addEventListener("keyup", event => {
-  event.key === "ArrowLeft" ? lefty = false : null
-  event.key === "ArrowRight" ? righty = false : null
-  event.key === "ArrowUp" ? upy = false : null
-})
+let lastKey
 
 //Tegner opp og animerer på canvas elementet
 function drawElements(){
   //Backgrunnen av canvas blir fylt og tømt
   ctx.fillStyle = 'grey'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-  //Player 1 blir tegnet opp og nlir sjekket for movement 
+ 
   player1.update()
-  left ? player1.playerPosition.x = player1.playerPosition.x - 2 : null
-  right ? player1.playerPosition.x = player1.playerPosition.x + 2 : null
-  up ? player1.playerVelocity.y = -2 : null
-
-  //Player 2 blir tegnet opp og nlir sjekket for movement 
   player2.update()
-  lefty ? player2.playerPosition.x = player2.playerPosition.x - 2 : null
-  righty ? player2.playerPosition.x = player2.playerPosition.x + 2 : null
-  upy ? player2.playerVelocity.y = - 2 : null
+
+  //Setter player velocity til 0, slik at den er 0 med mindre verlocity blir til true/false
+  player1.playerVelocity.x = 0
+  player2.playerVelocity.x = 0
+
+  //Hva som skjer dersom tast blir trykket på
+  if (keys.a.pressed && lastKey === 'a') {
+    player1.playerVelocity.x = - 2
+  }else if(keys.d.pressed && lastKey === 'd'){
+    player1.playerVelocity.x = 2
+  }
+
+  if (keys.ArrowLeft.pressed && player2.lastKey === 'ArrowLeft') {
+    player2.playerVelocity.x = - 2
+  }else if(keys.ArrowRight.pressed && player2.lastKey === 'ArrowRight'){
+    player2.playerVelocity.x = 2
+  }
 
   //Sjekker for kollisjon på attackBox
   if (
@@ -143,12 +150,74 @@ function drawElements(){
     //Sjekker om attackbox treffer ovenfra
     player1.attackBox.position.y + player1.attackBox.height >= player2.playerPosition.y &&
     //Sjekker om attackbox treffer under fra
-    player1.attackBox.position.y <= player2.playerPosition.y + player2.playerHeight
+    player1.attackBox.position.y <= player2.playerPosition.y + player2.playerHeight &&
+    player1.isAttacking
   ){
-    console.log('attack');
+    player1.isAttacking = false
+    console.log("player 1 is attacking");
   }
 
   requestAnimationFrame(drawElements)
 }
 
 drawElements()
+
+//Legger til player movement for player 1
+//addEventListener "hører" etter om en tast er trykket ned
+//Dette er en arrow funksjon med paramenter event
+addEventListener('keydown', (event)=>{
+  //Switch case, den tar imot paramenter og key, den sjekker om tasten d er presset ned, break stopper JS
+  switch (event.key){
+    //Hvis d er "caset" så skal tasten = sann
+    case 'd': 
+      keys.d.pressed = true
+      lastKey = 'd'
+    break
+    case 'a': 
+      keys.a.pressed = true
+      lastKey = 'a'
+    break
+    case 'w': 
+      player1.playerVelocity.y = - 8
+    break
+    case 's': 
+      player1.attack()
+    break
+
+    case 'ArrowRight': 
+      keys.ArrowRight.pressed = true
+      player2.lastKey = 'ArrowRight'
+    break
+    case 'ArrowLeft': 
+      keys.ArrowLeft.pressed = true
+      player2.lastKey = 'ArrowLeft'
+    break
+    case 'ArrowUp': 
+      player2.playerVelocity.y = - 8
+    break
+  }
+})
+
+addEventListener('keyup', (event)=>{
+  switch (event.key){
+    case 'd': 
+      keys.d.pressed = false
+    break
+    case 'a': 
+      keys.a.pressed = false
+    break
+    case 'w': 
+      keys.w.pressed = false
+    break
+
+    case 'ArrowRight': 
+      keys.ArrowRight.pressed = false
+    break
+    case 'ArrowLeft': 
+      keys.ArrowLeft.pressed = false
+    case 'ArrowUp': 
+      keys.ArrowUp.pressed = false
+    break
+
+}
+})
