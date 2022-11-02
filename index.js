@@ -15,18 +15,27 @@ const gravity = 0.0981
 class PlayerInfo{
   //Må ha med constructor som fungerer som en funksjon somm tar imot parameter
   //senere i koden definere jeg hva playerPosition er, for nå er den tom og kan endres på i hvert element istedenfor å lage flere arrayer med ulike verdier
-  constructor({playerPosition, playerVelocity}){
+  constructor({playerPosition, playerVelocity, color}){
     this.playerPosition = playerPosition
     this.playerVelocity = playerVelocity
+    this.playerWidth = 50
     this.playerHeight = 150
+    this.color = color
+    this.attackBox = {
+      position: this.playerPosition,
+      width: 100,
+      height: 50
+    }
   }
 
   //lager en funksjon som tegner opp player
   drawPlayer(){
-    ctx.beginPath()
-    ctx.fillStyle = 'red'
-    ctx.fillRect(this.playerPosition.x, this.playerPosition.y, 50, 150)
-    ctx.closePath()
+    ctx.fillStyle = this.color
+    ctx.fillRect(this.playerPosition.x, this.playerPosition.y, this.playerWidth, this.playerHeight)
+    
+    ctx.fillStyle = 'black'
+    ctx.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
+
   }
 
   //lager en update funksjon som har med "opdatert" informasjon om player
@@ -53,7 +62,8 @@ const player1 = new PlayerInfo({
   playerVelocity: {
     x: 0,
     y: 0
-  }
+  },
+  color : 'pink'
 })
 
 //Her blir informasjon om player 2 lagret
@@ -66,13 +76,15 @@ const player2 = new PlayerInfo({
   playerVelocity: {
     x: 0,
     y: 0
-  }
+  },
+  color : 'yellow'
 })
 
 //Player 1 sin movement
 let right = false
 let left = false
 let up = false
+let attack = false
 
 function checkButton(event) {
   event.key === "a" ? left = true : null
@@ -106,7 +118,8 @@ document.addEventListener("keyup", event => {
 
 //Tegner opp og animerer på canvas elementet
 function drawElements(){
-  ctx.fillStyle = 'blue'
+  //Backgrunnen av canvas blir fylt og tømt
+  ctx.fillStyle = 'grey'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   //Player 1 blir tegnet opp og nlir sjekket for movement 
@@ -120,6 +133,20 @@ function drawElements(){
   lefty ? player2.playerPosition.x = player2.playerPosition.x - 2 : null
   righty ? player2.playerPosition.x = player2.playerPosition.x + 2 : null
   upy ? player2.playerVelocity.y = - 2 : null
+
+  //Sjekker for kollisjon på attackBox
+  if (
+    //Sjekker om attackbox treffer forfra
+    player1.attackBox.position.x + player1.attackBox.width >= player2.playerPosition.x &&
+    //Sjekker om attackbox treffer bakfra
+    player1.attackBox.position.x <= player2.playerPosition.x + player2.playerWidth &&
+    //Sjekker om attackbox treffer ovenfra
+    player1.attackBox.position.y + player1.attackBox.height >= player2.playerPosition.y &&
+    //Sjekker om attackbox treffer under fra
+    player1.attackBox.position.y <= player2.playerPosition.y + player2.playerHeight
+  ){
+    console.log('attack');
+  }
 
   requestAnimationFrame(drawElements)
 }
