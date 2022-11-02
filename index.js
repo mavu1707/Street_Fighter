@@ -29,8 +29,10 @@ class PlayerInfo{
     ctx.closePath()
   }
 
+  //lager en update funksjon som har med "opdatert" informasjon om player
   update(){
     this.drawPlayer()
+    this.playerPosition.x += this.playerVelocity.x
     this.playerPosition.y += this.playerVelocity.y
 
     if(this.playerPosition.y + this.playerHeight + this.playerVelocity.y >= canvas.height){
@@ -54,7 +56,8 @@ const player1 = new PlayerInfo({
   }
 })
 
-//Her blir informasjon om player 2 lagret 
+//Her blir informasjon om player 2 lagret
+//Her bestemmer jeg playerposition
 const player2 = new PlayerInfo({
   playerPosition: {
     x: 850,
@@ -66,15 +69,87 @@ const player2 = new PlayerInfo({
   }
 })
 
+//Player 1 sin movement
+let right = false
+let left = false
+let up = false
+
+function checkButton(event) {
+  event.key === "a" ? left = true : null
+  event.key === "d" ? right = true : null
+  event.key === "w" ? up = true : null
+}
+document.addEventListener("keydown", checkButton)
+document.addEventListener("keyup", event => {
+  event.key === "a" ? left = false : null
+  event.key === "d" ? right = false : null
+  event.key === "w" ? up = false : null
+})
+
+
+//Player 2 sin movement
+let righty = false
+let lefty = false
+let upy = false
+
+function check(event) {
+  event.key === "ArrowLeft" ? lefty = true : null
+  event.key === "ArrowRight" ? righty = true : null
+  event.key === "ArrowUp" ? upy = true : null
+}
+document.addEventListener("keydown", check)
+document.addEventListener("keyup", event => {
+  event.key === "ArrowLeft" ? lefty = false : null
+  event.key === "ArrowRight" ? righty = false : null
+  event.key === "ArrowUp" ? upy = false : null
+})
+
 //Tegner opp og animerer på canvas elementet
 function drawElements(){
   ctx.fillStyle = 'blue'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   player1.update()
+  left ? player1.playerPosition.x = player1.playerPosition.x - 2 : null
+  right ? player1.playerPosition.x = player1.playerPosition.x + 2 : null
+  up ? player1.playerVelocity.y = -2 : null
+
   player2.update()
+  lefty ? player2.playerPosition.x = player2.playerPosition.x - 2 : null
+  righty ? player2.playerPosition.x = player2.playerPosition.x + 2 : null
+  upy ? player2.playerVelocity.y = - 2 : null
 
   requestAnimationFrame(drawElements)
 }
 
 drawElements()
+
+
+
+/*
+//Legger til player movement
+//addEventListener "hører" etter om en tast er trykket ned
+//Dette er en arrow funksjon med paramenter event
+addEventListener('keydown', (event)=>{
+  //Switch case, den tar imot paramenter og key, den sjekker om tasten d er presset ned, break stopper JS
+  switch (event.key){
+    case 'd': 
+      player1.playerVelocity.x = 1
+    break
+    case 'a': 
+      player1.playerVelocity.x = -1
+    break
+  }
+})
+
+addEventListener('keyup', (event)=>{
+  switch (event.key){
+    case 'd': 
+      player1.playerVelocity.x = 0
+    break
+    case 'a': 
+      player1.playerVelocity.x = 0
+    break
+  }
+})
+*/
