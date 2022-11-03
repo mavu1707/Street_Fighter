@@ -18,8 +18,8 @@ const background = new Sprite({
 
 const shop = new Sprite({
   position: {
-    x: 600,
-    y: 128
+    x: 700,
+    y: 225
   },
   imageSrc: './img/shop.png',
   scale: 2.75,
@@ -117,11 +117,11 @@ const enemy = new Fighter({
       framesMax: 8
     },
     jump: {
-      imageSrc: './img/player2/Jump.png',
+      imageSrc: './img/player2/Going up.png',
       framesMax: 2
     },
     fall: {
-      imageSrc: './img/player2/Fall.png',
+      imageSrc: './img/player2/Going down.png',
       framesMax: 2
     },
     attack1: {
@@ -161,8 +161,6 @@ const keys = {
     pressed: false
   }
 }
-
-decreaseTimer()
 
 function animate() {
   window.requestAnimationFrame(animate)
@@ -215,53 +213,14 @@ function animate() {
     enemy.switchSprite('fall')
   }
 
-  // detect for collision & enemy gets hit
-  if (
-    rectangularCollision({
-      rectangle1: player,
-      rectangle2: enemy
-    }) &&
-    player.isAttacking &&
-    player.framesCurrent === 4
-  ) {
-    enemy.takeHit()
-    player.isAttacking = false
-
-    gsap.to('#enemyHealth', {
-      width: enemy.health + '%'
-    })
-  }
-
   // if player misses
   if (player.isAttacking && player.framesCurrent === 4) {
     player.isAttacking = false
   }
 
-  // this is where our player gets hit
-  if (
-    rectangularCollision({
-      rectangle1: enemy,
-      rectangle2: player
-    }) &&
-    enemy.isAttacking &&
-    enemy.framesCurrent === 2
-  ) {
-    player.takeHit()
-    enemy.isAttacking = false
-
-    gsap.to('#playerHealth', {
-      width: player.health + '%'
-    })
-  }
-
   // if player misses
   if (enemy.isAttacking && enemy.framesCurrent === 2) {
     enemy.isAttacking = false
-  }
-
-  // end game based on health
-  if (enemy.health <= 0 || player.health <= 0) {
-    determineWinner({ player, enemy, timerId })
   }
 }
 
