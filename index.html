@@ -2,15 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatibconsole.log();le" content="IE=edge">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Street Fighter</title>
-  <link rel="stylesheet" type="text/css" href="index.css">
+  <title>Document</title>
 </head>
 <body>
-  <!--Selve Canvas Elementet-->
+      <div
+        style="
+          position: relative;
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+          border-top: 4px solid white;
+          border-left: 4px solid white;
+          border-bottom: 4px solid white;
+        "
+      >
+        <div style="background-color: red; height: 30px; width: 100%"></div>
+        <div
+          id="playerHealth"
+          style="
+            position: absolute;
+            background: #818cf8;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+          "
+        ></div>
+      </div>
+
+
+  <!--Canvas elementet-->
   <canvas></canvas>
-  <!--Legger til JavaScript Kode-->
+
+  <!--Kobler til Javascript-->
+  <script src="utils.js"></script>
   <script src="classes.js"></script>
   <script src="index.js"></script>
 </body>

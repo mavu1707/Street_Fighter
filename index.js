@@ -1,49 +1,150 @@
-//Istedenfor å bruke getElementById bruker jeg querySelector, har ikke lagt til id til canvas elementet så querySelector ser etter elementer i html filen med navnet 'canvas'
 const canvas = document.querySelector('canvas')
+const c = canvas.getContext('2d')
 
-//Bestemmer canvas størrelse
-canvas.width = 1200
-canvas.height = 800
+canvas.width = 1024
+canvas.height = 576
 
-//Gir canvas en context
-const ctx = canvas.getContext('2d')
+c.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = 0.0981
+const gravity = 0.7
 
-const background = new Sprite ({
+const background = new Sprite({
   position: {
     x: 0,
     y: 0
   },
-  imgSrc: './img/background.png'
+  imageSrc: './img/background.png'
 })
 
-//Her blir informasjon om player 1 lagret
-//Her bestemmer jeg playerposition
-const player1 = new PlayerInfo({
-  playerPosition: {
-    x: 100,
-    y: 0
+const shop = new Sprite({
+  position: {
+    x: 600,
+    y: 128
   },
-  playerVelocity: {
+  imageSrc: './img/shop.png',
+  scale: 2.75,
+  framesMax: 6
+})
+
+const player = new Fighter({
+  position: {
     x: 0,
     y: 0
   },
-  color : 'pink'
-})
-
-//Her blir informasjon om player 2 lagret
-//Her bestemmer jeg playerposition
-const player2 = new PlayerInfo({
-  playerPosition: {
-    x: 850,
-    y: 0
-  },
-  playerVelocity: {
+  velocity: {
     x: 0,
     y: 0
   },
-  color : 'yellow'
+  offset: {
+    x: 0,
+    y: 0
+  },
+  imageSrc: './img/player1/Idle.png',
+  framesMax: 8,
+  scale: 2.5,
+  offset: {
+    x: 215,
+    y: 157
+  },
+  sprites: {
+    idle: {
+      imageSrc: './img/player1/Idle.png',
+      framesMax: 8
+    },
+    run: {
+      imageSrc: './img/player1/Run.png',
+      framesMax: 8
+    },
+    jump: {
+      imageSrc: './img/player1/Jump.png',
+      framesMax: 2
+    },
+    fall: {
+      imageSrc: './img/player1/Fall.png',
+      framesMax: 2
+    },
+    attack1: {
+      imageSrc: './img/player1/Attack1.png',
+      framesMax: 8
+    },
+    takeHit: {
+      imageSrc: './img/player1/Take hit.png',
+      framesMax: 3
+    },
+    death: {
+      imageSrc: './img/player1/Death.png',
+      framesMax: 7
+    }
+  },
+  attackBox: {
+    offset: {
+      x: 100,
+      y: 50
+    },
+    width: 160,
+    height: 50
+  }
+})
+
+const enemy = new Fighter({
+  position: {
+    x: 400,
+    y: 100
+  },
+  velocity: {
+    x: 0,
+    y: 0
+  },
+  color: 'blue',
+  offset: {
+    x: -50,
+    y: 0
+  },
+  imageSrc: './img/player2/Idle.png',
+  framesMax: 10,
+  scale: 2.5,
+  offset: {
+    x: 215,
+    y: 167
+  },
+  sprites: {
+    idle: {
+      imageSrc: './img/player2/Idle.png',
+      framesMax: 10
+    },
+    run: {
+      imageSrc: './img/player2/Run.png',
+      framesMax: 8
+    },
+    jump: {
+      imageSrc: './img/player2/Jump.png',
+      framesMax: 2
+    },
+    fall: {
+      imageSrc: './img/player2/Fall.png',
+      framesMax: 2
+    },
+    attack1: {
+      imageSrc: './img/player2/Attack1.png',
+      framesMax: 7
+    },
+    takeHit: {
+      imageSrc: './img/player2/Take hit.png',
+      framesMax: 3
+    },
+    death: {
+      imageSrc: './img/player2/Death.png',
+      framesMax: 11
+    }
+  },
+  attackBox: {
+    offset: {
+      x: -170,
+      y: 50
+    },
+    width: 170,
+    height: 50
+  }
 })
 
 const keys = {
@@ -53,127 +154,177 @@ const keys = {
   d: {
     pressed: false
   },
-  w: {
+  ArrowRight: {
     pressed: false
   },
   ArrowLeft: {
     pressed: false
-  },
-  ArrowRight: {
-    pressed: false
-  },
-  ArrowUp: {
-    pressed: false
   }
 }
 
-let lastKey
+decreaseTimer()
 
-//Tegner opp og animerer på canvas elementet
-function drawElements(){
-  //Backgrunnen av canvas blir fylt og tømt
-  ctx.fillStyle = 'grey'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
- 
+function animate() {
+  window.requestAnimationFrame(animate)
+  c.fillStyle = 'black'
+  c.fillRect(0, 0, canvas.width, canvas.height)
   background.update()
+  shop.update()
+  c.fillStyle = 'rgba(255, 255, 255, 0.15)'
+  c.fillRect(0, 0, canvas.width, canvas.height)
+  player.update()
+  enemy.update()
 
-  player1.update()
-  player2.update()
+  player.velocity.x = 0
+  enemy.velocity.x = 0
 
-  //Setter player velocity til 0, slik at den er 0 med mindre verlocity blir til true/false
-  player1.playerVelocity.x = 0
-  player2.playerVelocity.x = 0
+  // player movement
 
-  //Hva som skjer dersom tast blir trykket på
-  if (keys.a.pressed && lastKey === 'a') {
-    player1.playerVelocity.x = - 2
-  }else if(keys.d.pressed && lastKey === 'd'){
-    player1.playerVelocity.x = 2
+  if (keys.a.pressed && player.lastKey === 'a') {
+    player.velocity.x = -5
+    player.switchSprite('run')
+  } else if (keys.d.pressed && player.lastKey === 'd') {
+    player.velocity.x = 5
+    player.switchSprite('run')
+  } else {
+    player.switchSprite('idle')
   }
 
-  if (keys.ArrowLeft.pressed && player2.lastKey === 'ArrowLeft') {
-    player2.playerVelocity.x = - 2
-  }else if(keys.ArrowRight.pressed && player2.lastKey === 'ArrowRight'){
-    player2.playerVelocity.x = 2
+  // jumping
+  if (player.velocity.y < 0) {
+    player.switchSprite('jump')
+  } else if (player.velocity.y > 0) {
+    player.switchSprite('fall')
   }
 
-  //Sjekker for kollisjon på attackBox
+  // Enemy movement
+  if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
+    enemy.velocity.x = -5
+    enemy.switchSprite('run')
+  } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
+    enemy.velocity.x = 5
+    enemy.switchSprite('run')
+  } else {
+    enemy.switchSprite('idle')
+  }
+
+  // jumping
+  if (enemy.velocity.y < 0) {
+    enemy.switchSprite('jump')
+  } else if (enemy.velocity.y > 0) {
+    enemy.switchSprite('fall')
+  }
+
+  // detect for collision & enemy gets hit
   if (
-    //Sjekker om attackbox treffer forfra
-    player1.attackBox.position.x + player1.attackBox.width >= player2.playerPosition.x &&
-    //Sjekker om attackbox treffer bakfra
-    player1.attackBox.position.x <= player2.playerPosition.x + player2.playerWidth &&
-    //Sjekker om attackbox treffer ovenfra
-    player1.attackBox.position.y + player1.attackBox.height >= player2.playerPosition.y &&
-    //Sjekker om attackbox treffer under fra
-    player1.attackBox.position.y <= player2.playerPosition.y + player2.playerHeight &&
-    player1.isAttacking
-  ){
-    player1.isAttacking = false
-    console.log("player 1 is attacking");
+    rectangularCollision({
+      rectangle1: player,
+      rectangle2: enemy
+    }) &&
+    player.isAttacking &&
+    player.framesCurrent === 4
+  ) {
+    enemy.takeHit()
+    player.isAttacking = false
+
+    gsap.to('#enemyHealth', {
+      width: enemy.health + '%'
+    })
   }
 
-  requestAnimationFrame(drawElements)
+  // if player misses
+  if (player.isAttacking && player.framesCurrent === 4) {
+    player.isAttacking = false
+  }
+
+  // this is where our player gets hit
+  if (
+    rectangularCollision({
+      rectangle1: enemy,
+      rectangle2: player
+    }) &&
+    enemy.isAttacking &&
+    enemy.framesCurrent === 2
+  ) {
+    player.takeHit()
+    enemy.isAttacking = false
+
+    gsap.to('#playerHealth', {
+      width: player.health + '%'
+    })
+  }
+
+  // if player misses
+  if (enemy.isAttacking && enemy.framesCurrent === 2) {
+    enemy.isAttacking = false
+  }
+
+  // end game based on health
+  if (enemy.health <= 0 || player.health <= 0) {
+    determineWinner({ player, enemy, timerId })
+  }
 }
 
-drawElements()
+animate()
 
-//Legger til player movement for player 1
-//addEventListener "hører" etter om en tast er trykket ned
-//Dette er en arrow funksjon med paramenter event
-addEventListener('keydown', (event)=>{
-  //Switch case, den tar imot paramenter og key, den sjekker om tasten d er presset ned, break stopper JS
-  switch (event.key){
-    //Hvis d er "caset" så skal tasten = sann
-    case 'd': 
-      keys.d.pressed = true
-      lastKey = 'd'
-    break
-    case 'a': 
-      keys.a.pressed = true
-      lastKey = 'a'
-    break
-    case 'w': 
-      player1.playerVelocity.y = - 8
-    break
-    case 's': 
-      player1.attack()
-    break
+window.addEventListener('keydown', (event) => {
+  if (!player.dead) {
+    switch (event.key) {
+      case 'd':
+        keys.d.pressed = true
+        player.lastKey = 'd'
+        break
+      case 'a':
+        keys.a.pressed = true
+        player.lastKey = 'a'
+        break
+      case 'w':
+        player.velocity.y = -20
+        break
+      case ' ':
+        player.attack()
+        break
+    }
+  }
 
-    case 'ArrowRight': 
-      keys.ArrowRight.pressed = true
-      player2.lastKey = 'ArrowRight'
-    break
-    case 'ArrowLeft': 
-      keys.ArrowLeft.pressed = true
-      player2.lastKey = 'ArrowLeft'
-    break
-    case 'ArrowUp': 
-      player2.playerVelocity.y = - 8
-    break
+  if (!enemy.dead) {
+    switch (event.key) {
+      case 'ArrowRight':
+        keys.ArrowRight.pressed = true
+        enemy.lastKey = 'ArrowRight'
+        break
+      case 'ArrowLeft':
+        keys.ArrowLeft.pressed = true
+        enemy.lastKey = 'ArrowLeft'
+        break
+      case 'ArrowUp':
+        enemy.velocity.y = -20
+        break
+      case 'ArrowDown':
+        enemy.attack()
+
+        break
+    }
   }
 })
 
-addEventListener('keyup', (event)=>{
-  switch (event.key){
-    case 'd': 
+window.addEventListener('keyup', (event) => {
+  switch (event.key) {
+    case 'd':
       keys.d.pressed = false
-    break
-    case 'a': 
+      break
+    case 'a':
       keys.a.pressed = false
-    break
-    case 'w': 
-      keys.w.pressed = false
-    break
+      break
+  }
 
-    case 'ArrowRight': 
+  // enemy keys
+  switch (event.key) {
+    case 'ArrowRight':
       keys.ArrowRight.pressed = false
-    break
-    case 'ArrowLeft': 
+      break
+    case 'ArrowLeft':
       keys.ArrowLeft.pressed = false
-    case 'ArrowUp': 
-      keys.ArrowUp.pressed = false
-    break
-
-}
+      break
+  }
 })
