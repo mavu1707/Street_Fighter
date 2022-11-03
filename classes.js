@@ -113,9 +113,9 @@ class Fighter extends Sprite {
     this.position.y += this.velocity.y
 
     /*Graviteten blir "laget"*/
-    if (this.position.y + this.height + this.velocity.y >= canvas.height - 96) {
+    if (this.position.y + this.height + this.velocity.y >= canvas.height - 100) {
       this.velocity.y = 0
-      this.position.y = 330
+      this.position.y = 600
     } else this.velocity.y += gravity
   }
 
@@ -179,10 +179,10 @@ class Fighter extends Sprite {
 class Platform{
   constructor(){
     this.position ={
-      x: 380,
-      y: 290
+      x: 0,
+      y: 670
     }
-    this.width = 200
+    this.width = 480
     this.height = 20
   }
   draw(){

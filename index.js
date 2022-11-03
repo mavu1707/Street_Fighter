@@ -3,8 +3,8 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
 /*Canvas sin størrelse*/
-canvas.width = 1024
-canvas.height = 576
+canvas.width = 1200
+canvas.height = 850
 
 /*Fyller canvas*/
 ctx.fillRect(0, 0, canvas.width, canvas.height)
