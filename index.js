@@ -86,68 +86,6 @@ const player = new Fighter({
   }
 })
 
-/*
-const enemy = new Fighter({
-  position: {
-    x: 400,
-    y: 100
-  },
-  velocity: {
-    x: 0,
-    y: 0
-  },
-  color: 'blue',
-  offset: {
-    x: -50,
-    y: 0
-  },
-  imageSrc: './img/player2/Idle.png',
-  framesMax: 10,
-  scale: 2.5,
-  offset: {
-    x: 215,
-    y: 167
-  },
-  sprites: {
-    idle: {
-      imageSrc: './img/player2/Idle.png',
-      framesMax: 10
-    },
-    run: {
-      imageSrc: './img/player2/Run.png',
-      framesMax: 8
-    },
-    jump: {
-      imageSrc: './img/player2/Going up.png',
-      framesMax: 2
-    },
-    fall: {
-      imageSrc: './img/player2/Going down.png',
-      framesMax: 2
-    },
-    attack1: {
-      imageSrc: './img/player2/Attack1.png',
-      framesMax: 7
-    },
-    takeHit: {
-      imageSrc: './img/player2/Take hit.png',
-      framesMax: 3
-    },
-    death: {
-      imageSrc: './img/player2/Death.png',
-      framesMax: 11
-    }
-  },
-  attackBox: {
-    offset: {
-      x: -170,
-      y: 50
-    },
-    width: 170,
-    height: 50
-  }
-})
-*/
 const keys = {
   a: {
     pressed: false
@@ -172,12 +110,8 @@ function animate() {
   c.fillStyle = 'rgba(255, 255, 255, 0.15)'
   c.fillRect(0, 0, canvas.width, canvas.height)
   player.update()
-  //enemy.update()
 
   player.velocity.x = 0
-  //enemy.velocity.x = 0
-
-  // player movement
 
   if (keys.a.pressed && player.lastKey === 'a') {
     player.velocity.x = -5
@@ -195,35 +129,6 @@ function animate() {
   } else if (player.velocity.y > 0) {
     player.switchSprite('fall')
   }
-
-  /* Enemy movement
-  if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-    enemy.velocity.x = -5
-    enemy.switchSprite('run')
-  } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
-    enemy.velocity.x = 5
-    enemy.switchSprite('run')
-  } else {
-    enemy.switchSprite('idle')
-  }
-
-  // jumping
-  if (enemy.velocity.y < 0) {
-    enemy.switchSprite('jump')
-  } else if (enemy.velocity.y > 0) {
-    enemy.switchSprite('fall')
-  }
-*/
-  // if player misses
-  if (player.isAttacking && player.framesCurrent === 4) {
-    player.isAttacking = false
-  }
-
-  /* if player misses
-  if (enemy.isAttacking && enemy.framesCurrent === 2) {
-    enemy.isAttacking = false
-  }
-  */
 }
 
 animate()
