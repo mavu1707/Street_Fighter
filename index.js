@@ -75,14 +75,6 @@ const player = new Fighter({
       imageSrc: './img/player1/Death.png',
       framesMax: 7
     }
-  },
-  attackBox: {
-    offset: {
-      x: 100,
-      y: 50
-    },
-    width: 160,
-    height: 50
   }
 })
 
@@ -92,17 +84,11 @@ const keys = {
   },
   d: {
     pressed: false
-  },
-  ArrowRight: {
-    pressed: false
-  },
-  ArrowLeft: {
-    pressed: false
   }
 }
 
-function animate() {
-  window.requestAnimationFrame(animate)
+function drawElements() {
+  requestAnimationFrame(drawElements)
   c.fillStyle = 'black'
   c.fillRect(0, 0, canvas.width, canvas.height)
   background.update()
@@ -131,66 +117,34 @@ function animate() {
   }
 }
 
-animate()
+drawElements()
 
-window.addEventListener('keydown', (event) => {
-  if (!player.dead) {
-    switch (event.key) {
-      case 'd':
-        keys.d.pressed = true
-        player.lastKey = 'd'
-        break
-      case 'a':
-        keys.a.pressed = true
-        player.lastKey = 'a'
-        break
-      case 'w':
-        player.velocity.y = -20
-        break
-      case ' ':
-        player.attack()
-        break
-    }
-  }
-
-  if (!enemy.dead) {
-    switch (event.key) {
-      case 'ArrowRight':
-        keys.ArrowRight.pressed = true
-        enemy.lastKey = 'ArrowRight'
-        break
-      case 'ArrowLeft':
-        keys.ArrowLeft.pressed = true
-        enemy.lastKey = 'ArrowLeft'
-        break
-      case 'ArrowUp':
-        enemy.velocity.y = -20
-        break
-      case 'ArrowDown':
-        enemy.attack()
-
-        break
-    }
+addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'd':
+      keys.d.pressed = true
+      player.lastKey = 'd'
+      break
+    case 'a':
+      keys.a.pressed = true
+      player.lastKey = 'a'
+      break
+    case 'w':
+      player.velocity.y = -20
+      break
+    case ' ':
+      player.attack()
+      break
   }
 })
 
-window.addEventListener('keyup', (event) => {
+addEventListener('keyup', (event) => {
   switch (event.key) {
     case 'd':
       keys.d.pressed = false
       break
     case 'a':
       keys.a.pressed = false
-      break
-  }
-
-  // enemy keys
-  switch (event.key) {
-    case 'ArrowRight':
-      keys.ArrowRight.pressed = false
-      break
-    case 'ArrowLeft':
-      keys.ArrowLeft.pressed = false
       break
   }
 })
