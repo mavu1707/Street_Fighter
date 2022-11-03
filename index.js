@@ -86,6 +86,7 @@ const player = new Fighter({
   }
 })
 
+/*
 const enemy = new Fighter({
   position: {
     x: 400,
@@ -146,7 +147,7 @@ const enemy = new Fighter({
     height: 50
   }
 })
-
+*/
 const keys = {
   a: {
     pressed: false
@@ -171,10 +172,10 @@ function animate() {
   c.fillStyle = 'rgba(255, 255, 255, 0.15)'
   c.fillRect(0, 0, canvas.width, canvas.height)
   player.update()
-  enemy.update()
+  //enemy.update()
 
   player.velocity.x = 0
-  enemy.velocity.x = 0
+  //enemy.velocity.x = 0
 
   // player movement
 
@@ -195,7 +196,7 @@ function animate() {
     player.switchSprite('fall')
   }
 
-  // Enemy movement
+  /* Enemy movement
   if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
     enemy.velocity.x = -5
     enemy.switchSprite('run')
@@ -212,16 +213,17 @@ function animate() {
   } else if (enemy.velocity.y > 0) {
     enemy.switchSprite('fall')
   }
-
+*/
   // if player misses
   if (player.isAttacking && player.framesCurrent === 4) {
     player.isAttacking = false
   }
 
-  // if player misses
+  /* if player misses
   if (enemy.isAttacking && enemy.framesCurrent === 2) {
     enemy.isAttacking = false
   }
+  */
 }
 
 animate()
