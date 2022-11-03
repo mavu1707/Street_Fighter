@@ -1,4 +1,11 @@
+/*https://www.w3schools.com/js/js_classes.asp*/
+/*https://medium.com/dailyjs/how-to-build-a-simple-sprite-animation-in-javascript-b764644244aa*/
+/*https://www.youtube.com/watch?v=CY0HE277IBM*/
+/*https://levelup.gitconnected.com/three-ways-to-animate-sprite-sheet-image-a5c000f0c579*/
+/*https://luizmelo.itch.io/*/
+/*Lager en klasse som inneholder informasjon om animasjoner (sprite er JS animasjoner)*/
 class Sprite {
+  /*Alle klasser har en konstruktur*/
   constructor({
     position,
     imageSrc,
@@ -14,13 +21,12 @@ class Sprite {
     this.scale = scale
     this.framesMax = framesMax
     this.framesCurrent = 0
-    this.framesElapsed = 0
-    this.framesHold = 5
     this.offset = offset
   }
 
+  /*Draw funksjonen, hva som skal gjelde for elementer som blir tegnet opp*/
   draw() {
-    c.drawImage(
+    ctx.drawImage(
       this.image,
       this.framesCurrent * (this.image.width / this.framesMax),
       0,
@@ -51,6 +57,7 @@ class Sprite {
   }
 }
 
+/*Denne klassen inheriter fra klassen over "extends". Men må passe på hva som skal overwrite og ikke fra inherit klassen*/
 class Fighter extends Sprite {
   constructor({
     position,
@@ -105,16 +112,18 @@ class Fighter extends Sprite {
     this.position.x += this.velocity.x
     this.position.y += this.velocity.y
 
-    // gravity function
+    /*Graviteten blir "laget"*/
     if (this.position.y + this.height + this.velocity.y >= canvas.height - 96) {
       this.velocity.y = 0
       this.position.y = 330
     } else this.velocity.y += gravity
   }
 
+  /*Angrep blir laget*/
   attack() {
     this.switchSprite('attack1')
     this.isAttacking = true
+    console.log("Spiller angriper");
   }
 
   switchSprite(sprite) {
@@ -124,6 +133,7 @@ class Fighter extends Sprite {
     )
       return
 
+    /*Tilfeller av hvilken animasjon som skal spilles av*/
     switch (sprite) {
       case 'idle':
         if (this.image !== this.sprites.idle.image) {
@@ -163,5 +173,24 @@ class Fighter extends Sprite {
         }
         break
     }
+  }
+}
+
+class Platform{
+  constructor(){
+    this.position ={
+      x: 380,
+      y: 290
+    }
+    this.width = 200
+    this.height = 20
+  }
+  draw(){
+    ctx.fillStyle = 'red'
+    ctx.fillRect(
+      this.position.x, 
+      this.position.y, 
+      this.width, 
+      this.height)
   }
 }
