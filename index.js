@@ -74,8 +74,6 @@ const player = new Fighter({
     }
   }
 })
-
-const platform = new Platform()
 /*Taster er false uansett fra starten av, blir endret dersom eventListener "hører" ett tastetrykk*/
 const keys = {
   a: {
@@ -91,7 +89,6 @@ function drawElements() {
   requestAnimationFrame(drawElements)
   background.update()
   player.update()
-  platform.draw()
 
   //fra sterten er velocity til spiller = 0, for at spiller ikke faller forbi canvas i starten
   player.velocity.x = 0

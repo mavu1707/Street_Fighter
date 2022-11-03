@@ -175,22 +175,3 @@ class Fighter extends Sprite {
     }
   }
 }
-
-class Platform{
-  constructor(){
-    this.position ={
-      x: 0,
-      y: 670
-    }
-    this.width = 480
-    this.height = 20
-  }
-  draw(){
-    ctx.fillStyle = 'red'
-    ctx.fillRect(
-      this.position.x, 
-      this.position.y, 
-      this.width, 
-      this.height)
-  }
-}
